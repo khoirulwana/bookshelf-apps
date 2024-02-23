@@ -6,18 +6,37 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
     addBook();
   });
+
+  // Menambahkan event listener pada checkbox
+  const inputBookIsComplete = document.getElementById("inputBookIsComplete");
+  inputBookIsComplete.addEventListener("change", function () {
+    updateStatusText();
+  });
+
 });
+
 
 const books = [];
 const RENDER_EVENT = "render-book";
 
+// Fungsi untuk membuat objek buku
 function addBook() {
   const title = document.getElementById("inputBookTitle").value;
+
+// memeriksa apakah buku dengan judul yang sama sudah ada
+  const isDuplicate = checkDuplicate(title);
+
+  if (isDuplicate) {
+    alert("Buku dengan judul yang sama sudah ada dalam rak!");
+    return;
+  }
+
   const author = document.getElementById("inputBookAuthor").value;
   const year = document.getElementById("inputBookYear").value;
   const inputBookIsComplete = document.getElementById(
     "inputBookIsComplete"
   ).checked;
+
 
   const generatedID = generateId();
   const bookObject = generateBookObject(
@@ -27,11 +46,28 @@ function addBook() {
     year,
     inputBookIsComplete
   );
+  
 
   books.push(bookObject);
+  saveBooksToLocalStorage();
 
   document.dispatchEvent(new Event(RENDER_EVENT));
+
+     // Mengosongkan input form setelah menambahkan buku
+document.getElementById("inputBookTitle").value = "";
+document.getElementById("inputBookAuthor").value = "";
+document.getElementById("inputBookYear").value = "";
+document.getElementById(
+    "inputBookIsComplete"
+  ).checked = false;
 }
+
+// Fungsi untuk memeriksa apakah buku dengan judul yang sama sudah ada
+function checkDuplicate(title) {
+  const existingBook = books.find((book) => book.title.toLowerCase() === title.toLowerCase());
+  return !!existingBook;
+}
+
 
 // generate id yang unik
 function generateId() {
@@ -84,6 +120,24 @@ document.addEventListener(RENDER_EVENT, function () {
     }
   }
 });
+
+// Fungsi untuk mengubah teks tombol "submit" berdasarkan checkbox
+function updateStatusText() {
+  const inputBookIsComplete = document.getElementById("inputBookIsComplete");
+  const statusElement = document.getElementById("status");
+
+  if (inputBookIsComplete.checked) {
+    statusElement.innerText = "Selesai dibaca";
+  } else {
+    statusElement.innerText = "Belum selesai dibaca";
+  }
+}
+
+    // Fungsi untuk menyimpan data buku ke localStorage
+    function saveBooksToLocalStorage() {
+      localStorage.setItem('books', JSON.stringify(books));
+  }
+
 
 //Fungsi untuk membuat elemen Buku yang sudah diinput
 function createBookList(bookObject) {
@@ -169,6 +223,7 @@ function markAsComplete(bookId) {
 
   if (bookIndex !== -1) {
     books[bookIndex].isComplete = true;
+    saveBooksToLocalStorage();
     document.dispatchEvent(new Event(RENDER_EVENT));
   }
 }
@@ -179,6 +234,7 @@ function markAsIncomplete(bookId) {
 
   if (bookIndex !== -1) {
     books[bookIndex].isComplete = false;
+    saveBooksToLocalStorage();
     document.dispatchEvent(new Event(RENDER_EVENT));
   }
 }
@@ -189,6 +245,7 @@ function removeBook(bookId) {
 
   if (bookIndex !== -1) {
     books.splice(bookIndex, 1);
+    saveBooksToLocalStorage();
     document.dispatchEvent(new Event(RENDER_EVENT));
   }
 }
