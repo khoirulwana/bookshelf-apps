@@ -12,9 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   inputBookIsComplete.addEventListener("change", function () {
     updateStatusText();
   });
-
 });
-
 
 const books = [];
 const RENDER_EVENT = "render-book";
@@ -23,7 +21,7 @@ const RENDER_EVENT = "render-book";
 function addBook() {
   const title = document.getElementById("inputBookTitle").value;
 
-// memeriksa apakah buku dengan judul yang sama sudah ada
+  // memeriksa apakah buku dengan judul yang sama sudah ada
   const isDuplicate = checkDuplicate(title);
 
   if (isDuplicate) {
@@ -37,7 +35,6 @@ function addBook() {
     "inputBookIsComplete"
   ).checked;
 
-
   const generatedID = generateId();
   const bookObject = generateBookObject(
     generatedID,
@@ -46,28 +43,26 @@ function addBook() {
     year,
     inputBookIsComplete
   );
-  
 
   books.push(bookObject);
   saveBooksToLocalStorage();
 
   document.dispatchEvent(new Event(RENDER_EVENT));
 
-     // Mengosongkan input form setelah menambahkan buku
-document.getElementById("inputBookTitle").value = "";
-document.getElementById("inputBookAuthor").value = "";
-document.getElementById("inputBookYear").value = "";
-document.getElementById(
-    "inputBookIsComplete"
-  ).checked = false;
+  // Mengosongkan input form setelah menambahkan buku
+  document.getElementById("inputBookTitle").value = "";
+  document.getElementById("inputBookAuthor").value = "";
+  document.getElementById("inputBookYear").value = "";
+  document.getElementById("inputBookIsComplete").checked = false;
 }
 
 // Fungsi untuk memeriksa apakah buku dengan judul yang sama sudah ada
 function checkDuplicate(title) {
-  const existingBook = books.find((book) => book.title.toLowerCase() === title.toLowerCase());
+  const existingBook = books.find(
+    (book) => book.title.toLowerCase() === title.toLowerCase()
+  );
   return !!existingBook;
 }
-
 
 // generate id yang unik
 function generateId() {
@@ -133,11 +128,10 @@ function updateStatusText() {
   }
 }
 
-    // Fungsi untuk menyimpan data buku ke localStorage
-    function saveBooksToLocalStorage() {
-      localStorage.setItem('books', JSON.stringify(books));
-  }
-
+// Fungsi untuk menyimpan data buku ke localStorage
+function saveBooksToLocalStorage() {
+  localStorage.setItem("books", JSON.stringify(books));
+}
 
 //Fungsi untuk membuat elemen Buku yang sudah diinput
 function createBookList(bookObject) {
