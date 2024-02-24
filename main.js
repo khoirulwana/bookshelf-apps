@@ -49,11 +49,12 @@ function addBook() {
 
   document.dispatchEvent(new Event(RENDER_EVENT));
 
-  // Mengosongkan input form setelah menambahkan buku
+  // Mengosongkan input form setelah menambahkan buku, dan mengembalikan teks pada tombol submit
   document.getElementById("inputBookTitle").value = "";
   document.getElementById("inputBookAuthor").value = "";
   document.getElementById("inputBookYear").value = "";
   document.getElementById("inputBookIsComplete").checked = false;
+  document.getElementById("status").innerText = "Belum selesai dibaca";
 }
 
 // Fungsi untuk memeriksa apakah buku dengan judul yang sama sudah ada
